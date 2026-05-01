@@ -3,7 +3,7 @@ import { authkitProxy } from '@workos-inc/authkit-nextjs';
 // In middleware auth mode, each page is protected by default.
 // Exceptions are configured via the `unauthenticatedPaths` option.
 export const proxy = authkitProxy({
-  redirectUri: `https://reactservercomponents.onrender.com/callback`,
+  redirectUri: process.env.REDIRECT_URI,
   middlewareAuth: {
     enabled: true,
     unauthenticatedPaths: ['/', '/login', '/callback'],
