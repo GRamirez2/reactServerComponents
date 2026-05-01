@@ -1,11 +1,6 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
 import RefreshCocktailButton from './RefreshCocktailButton';
-import {
-  withAuth,
-  signOut,
-} from '@workos-inc/authkit-nextjs';
-import { getAppBaseUrl } from '@/lib/appUrl';
 
 type CocktailDrink = {
   idDrink: string;
@@ -107,24 +102,14 @@ async function CocktailCard() {
 }
 
 export default async function Info() {
-    const { user } = await withAuth({ ensureSignedIn: true });
   return (
     <>
-      <h1>A Random Cocktail for {user?.firstName}</h1>
+      <h1>A Random Cocktail</h1>
       <p>This is a random cocktail generator. Click the button to get a new cocktail.</p>
       <RefreshCocktailButton />
       <Suspense fallback={<p>Loading random cocktail...</p>}>
         <CocktailCard />
       </Suspense>
-            <form
-        action={async () => {
-          'use server';
-          const appBaseUrl = await getAppBaseUrl();
-          await signOut({ returnTo: `${appBaseUrl}/` });
-        }}
-      >
-        <button type="submit">Sign out</button>
-      </form>
     </>
   );
 }

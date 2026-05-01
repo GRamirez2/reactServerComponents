@@ -12,4 +12,4 @@ export const proxy = authkitProxy({
 export default proxy;
 
 // Match routes that should have AuthKit proxy headers/session handling.
-export const config = { matcher: ['/info/:path*', '/people/:path*'] };
+export const config = { matcher: ['/', '/info/:path*', '/people/:path*'] };
