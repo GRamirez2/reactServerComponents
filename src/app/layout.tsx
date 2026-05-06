@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "George's Notes",
-  description: "George's notes on various topics, including programming, technology, and more.",
+  title: "UPSI",
+  description: "Prototype for UPSI scheduling app using WorkOS AuthKit and Next.js 13",
 };
 
 export default async function RootLayout({
@@ -32,7 +32,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthNav />
         <AuthKitProvider>
-        {children}
+        <div className="px-6">{children}</div>
         </AuthKitProvider>
       </body>
     </html>

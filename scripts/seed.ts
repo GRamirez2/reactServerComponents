@@ -14,15 +14,29 @@ async function seed() {
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
+      workos_id TEXT,
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);
 
   await pool.query(`
-    INSERT INTO users (name, email) VALUES
-      ('Alice Johnson', 'alice@example.com'),
-      ('Bob Smith', 'bob@example.com'),
-      ('Carol White', 'carol@example.com')
+    ALTER TABLE users DROP CONSTRAINT IF EXISTS users_workos_id_key
+  `);
+
+  await pool.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS workos_id TEXT
+  `);
+
+  await pool.query(`
+  DELETE FROM users WHERE email IN ('alice@example.com', 'bob@example.com', 'carol@example.com', 'leroy@example.com')
+`);
+
+  await pool.query(`
+    INSERT INTO users (name, email, workos_id) VALUES
+      ('Alice Johnson', 'alice@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA'),
+      ('Bob Smith', 'bob@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA'),
+      ('Carol White', 'carol@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMxxxxxx'),
+      ('Leroy Jenkins', 'leroy@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMxxxxxx')
     ON CONFLICT (email) DO NOTHING
   `);
 
