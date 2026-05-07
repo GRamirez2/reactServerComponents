@@ -8,6 +8,13 @@
       "when": 1778173647539,
       "tag": "0000_chubby_silver_fox",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778176666576,
+      "tag": "0001_stiff_sersi",
+      "breakpoints": true
     }
   ]
 }

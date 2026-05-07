@@ -25,6 +25,14 @@ async function seed() {
   `);
 
   await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS specialties (
+      id SERIAL PRIMARY KEY,
+      code TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL UNIQUE
+    )
+  `);
+
+  await db.execute(sql`
     DELETE FROM users_simple WHERE email IN ('alice@example.com', 'bob@example.com', 'carol@example.com', 'leroy@example.com')
   `);
 
@@ -35,7 +43,14 @@ async function seed() {
     { name: 'Leroy Jenkins', email: 'leroy@example.com', workosId: 'user_01KQJGH36JGSQY92VB9W8ZH1QJ' },
   ]).onConflictDoNothing();
 
+  await db.insert(schema.specialties).values([
+    { code: 'BLOOD', name: 'Blood' },
+    { code: 'TISSUE', name: 'Tissue' },
+    { code: 'BONE', name: 'Bone' },
+  ]).onConflictDoNothing();
+
   console.log('Seeded users_simple table with 4 rows.');
+  console.log('Seeded specialties table with baseline rows (Blood, Tissue, Bone).');
   await pool.end();
 }
 

@@ -1,4 +1,4 @@
-import { pgTable, serial, uuid, text, boolean, pgEnum, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, serial, uuid, text, boolean, pgEnum, timestamp, integer, primaryKey, index } from 'drizzle-orm/pg-core';
 
 export const usersSimple = pgTable('users_simple', {
   id: serial('id').primaryKey(),
@@ -16,6 +16,22 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   role: roleEnum('role'),
 });
+
+export const specialties = pgTable('specialties', {
+  id: serial('id').primaryKey(),
+  code: text('code').notNull().unique(),
+  name: text('name').notNull().unique(),
+});
+
+export const userSpecialties = pgTable('user_specialties', {
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  specialtyId: integer('specialty_id').references(() => specialties.id).notNull(),
+  isPrimary: boolean('is_primary').default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.specialtyId] }),
+  index('user_specialties_specialty_idx').on(table.specialtyId),
+]);
 
 export const doctorAssistantMapping = pgTable('doctor_assistant_mapping', {
   id: uuid('id').defaultRandom().primaryKey(),
