@@ -35,8 +35,8 @@ async function seed() {
     INSERT INTO users (name, email, workos_id) VALUES
       ('Alice Johnson', 'alice@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA'),
       ('Bob Smith', 'bob@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA'),
-      ('Carol White', 'carol@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMxxxxxx'),
-      ('Leroy Jenkins', 'leroy@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMxxxxxx')
+      ('Carol White', 'carol@example.com', 'user_01KQJGH36JGSQY92VB9W8ZH1QJ'),
+      ('Leroy Jenkins', 'leroy@example.com', 'user_01KQJGH36JGSQY92VB9W8ZH1QJ')
     ON CONFLICT (email) DO NOTHING
   `);
 
