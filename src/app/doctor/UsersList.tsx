@@ -25,7 +25,7 @@ export async function UsersList({ workosId }: UsersListProps) {
       <h3 className='text-xl'>List of Users from the Users table that match the WorkOS ID</h3>
       <ul>
         {users.map((user) => (
-          <li key={user.id}>{user.name} — {user.email} - {user.workos_id}</li>
+          <li key={user.id}>{user.name} — {user.email} - {user.workosId}</li>
         ))}
       </ul>
       <hr className="mt-4"/>

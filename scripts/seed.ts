@@ -1,5 +1,8 @@
 import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { sql } from 'drizzle-orm';
 import * as dotenv from 'dotenv';
+import * as schema from '../src/lib/schema';
 
 dotenv.config({ path: '.env.local' });
 
@@ -8,9 +11,11 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
+const db = drizzle(pool, { schema });
+
 async function seed() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS users_simple (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
@@ -19,28 +24,18 @@ async function seed() {
     )
   `);
 
-  await pool.query(`
-    ALTER TABLE users DROP CONSTRAINT IF EXISTS users_workos_id_key
+  await db.execute(sql`
+    DELETE FROM users_simple WHERE email IN ('alice@example.com', 'bob@example.com', 'carol@example.com', 'leroy@example.com')
   `);
 
-  await pool.query(`
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS workos_id TEXT
-  `);
+  await db.insert(schema.usersSimple).values([
+    { name: 'Alice Johnson', email: 'alice@example.com', workosId: 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA' },
+    { name: 'Bob Smith',     email: 'bob@example.com',   workosId: 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA' },
+    { name: 'Carol White',   email: 'carol@example.com', workosId: 'user_01KQJGH36JGSQY92VB9W8ZH1QJ' },
+    { name: 'Leroy Jenkins', email: 'leroy@example.com', workosId: 'user_01KQJGH36JGSQY92VB9W8ZH1QJ' },
+  ]).onConflictDoNothing();
 
-  await pool.query(`
-  DELETE FROM users WHERE email IN ('alice@example.com', 'bob@example.com', 'carol@example.com', 'leroy@example.com')
-`);
-
-  await pool.query(`
-    INSERT INTO users (name, email, workos_id) VALUES
-      ('Alice Johnson', 'alice@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA'),
-      ('Bob Smith', 'bob@example.com', 'user_01KQG3EA5ADQ3N8KFEYKQNTPMA'),
-      ('Carol White', 'carol@example.com', 'user_01KQJGH36JGSQY92VB9W8ZH1QJ'),
-      ('Leroy Jenkins', 'leroy@example.com', 'user_01KQJGH36JGSQY92VB9W8ZH1QJ')
-    ON CONFLICT (email) DO NOTHING
-  `);
-
-  console.log('Seeded users table with 3 rows.');
+  console.log('Seeded users_simple table with 4 rows.');
   await pool.end();
 }
 

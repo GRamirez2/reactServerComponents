@@ -1,19 +1,13 @@
-import db, { type DbClient } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+import db from '@/lib/db';
+import { usersSimple } from '@/lib/schema';
 
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  workos_id: string | null;
-  created_at: Date;
-};
+export type User = typeof usersSimple.$inferSelect;
 
-export async function listUsers(client: DbClient = db): Promise<User[]> {
-  const result = await client.query<User>('SELECT * FROM users_simple ORDER BY id');
-  return result.rows;
+export async function listUsers(): Promise<User[]> {
+  return db.select().from(usersSimple).orderBy(usersSimple.id);
 }
 
-export async function listUsersByWorkosId(workosId: string, client: DbClient = db): Promise<User[]> {
-  const result = await client.query<User>('SELECT * FROM users_simple WHERE workos_id = $1 ORDER BY id', [workosId]);
-  return result.rows;
+export async function listUsersByWorkosId(workosId: string): Promise<User[]> {
+  return db.select().from(usersSimple).where(eq(usersSimple.workosId, workosId)).orderBy(usersSimple.createdAt);
 }
