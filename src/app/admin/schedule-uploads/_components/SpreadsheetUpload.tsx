@@ -1,20 +1,26 @@
 'use client';
 
 import { useActionState } from 'react';
-import { parseDataAction, type ParseActionState } from './parseData';
+import { parseDataAction, type ParseActionState } from '../_actions/parseData';
 
 export default function SpreadsheetUpload() {
   const initialState: ParseActionState = {
     errorMessage: null,
     result: null,
   };
-  const [state, formAction, isPending] = useActionState(parseDataAction, initialState);
+  const [state, formAction, isPending] = useActionState(
+    parseDataAction,
+    initialState,
+  );
 
   return (
     <section className="mt-6 w-full max-w-4xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <form className="space-y-4" action={formAction}>
         <div>
-          <label htmlFor="document" className="mb-2 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="document"
+            className="mb-2 block text-sm font-medium text-gray-700"
+          >
             Select spreadsheet
           </label>
           <input
@@ -25,7 +31,8 @@ export default function SpreadsheetUpload() {
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 file:mr-4 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700"
           />
           <p className="mt-2 text-sm text-gray-500">
-            Accepted file types: .xlsx and .xlsb. Parsed JSON is currently available for .xlsx via officeparser.
+            Accepted file types: .xlsx and .xlsb. Parsed JSON is currently
+            available for .xlsx via officeparser.
           </p>
         </div>
         <button
@@ -38,14 +45,18 @@ export default function SpreadsheetUpload() {
       </form>
 
       {state.errorMessage ? (
-        <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{state.errorMessage}</p>
+        <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {state.errorMessage}
+        </p>
       ) : null}
 
       {state.result ? (
         <div className="mt-6 space-y-4">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">Parsed JSON</h2>
-            <p className="text-sm text-gray-600">Showing the parsed rows for {state.result.fileName}.</p>
+            <p className="text-sm text-gray-600">
+              Showing the parsed rows for {state.result.fileName}.
+            </p>
           </div>
 
           <pre className="max-h-128 overflow-auto rounded-lg bg-gray-950 p-4 text-sm text-gray-100">

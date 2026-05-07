@@ -1,40 +1,47 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getWorkOS, withAuth } from '@workos-inc/authkit-nextjs';
+import { getUserById } from '@/lib/repositories/usersRepository';
 
-const ROLE_ROUTES: Record<string, string> = {
-  admin: '/admin',
-  doctor: '/doctor',
-  member: '/info',
-  fellow: '/doctor',
+const DB_ROLE_ROUTES: Record<string, string> = {
+  ADMIN: '/admin',
+  DOCTOR: '/doctor',
+  ASSISTANT: '/doctor',
 };
 
 export default async function Home() {
   const { user } = await withAuth();
-  console.log('[Home] user = ', user);
-  let destination: string | null = null;
 
   if (user) {
+    // Check WorkOS org membership for Admin role first
     try {
       const workos = getWorkOS();
-      const memberships = await workos.userManagement.listOrganizationMemberships({
-        userId: user.id,
-      });
+      const memberships =
+        await workos.userManagement.listOrganizationMemberships({
+          userId: user.id,
+        });
 
-      const rawSlug = memberships.data[0]?.role?.slug;
-      const roleSlug = rawSlug?.includes('-') ? rawSlug.split('-').slice(1).join('-') : rawSlug;
-      destination = roleSlug ? ROLE_ROUTES[roleSlug] : null;
+      const rawSlug = memberships.data[0]?.role?.slug ?? '';
+      const roleSlug = rawSlug.includes('-')
+        ? rawSlug.split('-').slice(1).join('-')
+        : rawSlug;
 
-      if (destination) {
-        console.log(`[Home] Redirecting user with role '${roleSlug}' to ${destination}`);
+      if (roleSlug === 'admin') {
+        redirect('/admin');
       }
     } catch (error) {
-      console.error('[Home role redirect error]', error);
+      console.error('[Home] WorkOS membership check error:', error);
     }
-  }
 
-  if (destination) {
-    redirect(destination);
+    // Fall back to DB role for routing
+    const dbUser = await getUserById(user.id);
+
+    if (dbUser && dbUser.role !== 'MEMBER') {
+      const destination = DB_ROLE_ROUTES[dbUser.role];
+      if (destination) {
+        redirect(destination);
+      }
+    }
   }
 
   const buttonClassName =
@@ -46,9 +53,11 @@ export default async function Home() {
 
   return (
     <div className="mt-3 flex flex-col gap-2 text-xl">
-      <Link className={buttonClassName} href="/people">
-        Parse xlsx documents
-      </Link>
+      <p>
+        If you see this page you are authenticated by workOS, but have the
+        generic role of member. An admin has not assigned your role yet.
+      </p>
+
       <Link className={buttonClassName} href="/info">
         Random Cocktail + DB Users
       </Link>

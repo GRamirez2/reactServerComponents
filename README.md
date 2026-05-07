@@ -24,13 +24,13 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 This project uses [Drizzle ORM](https://orm.drizzle.team) with PostgreSQL. The schema lives in `src/lib/schema.ts` and the database connection in `src/lib/db.ts`.
 
-| Script | Description |
-|---|---|
-| `npm run db:push` | Directly syncs your schema to the database without generating migration files. Good for development. |
-| `npm run db:generate` | Generates SQL migration files in the `drizzle/` folder based on schema changes. |
-| `npm run db:migrate` | Applies any pending migration files from `drizzle/` to the database. |
-| `npm run db:studio` | Opens Drizzle Studio — a browser-based UI to browse and edit your database. |
-| `npm run seed` | Seeds the `users_simple` table with sample data (reads `DATABASE_URL` from `.env.local`). |
+| Script                | Description                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------- |
+| `npm run db:push`     | Directly syncs your schema to the database without generating migration files. Good for development. |
+| `npm run db:generate` | Generates SQL migration files in the `drizzle/` folder based on schema changes.                      |
+| `npm run db:migrate`  | Applies any pending migration files from `drizzle/` to the database.                                 |
+| `npm run db:studio`   | Opens Drizzle Studio — a browser-based UI to browse and edit your database.                          |
+| `npm run seed`        | Seeds the `users_simple` table with sample data (reads `DATABASE_URL` from `.env.local`).            |
 
 ## Learn More
 

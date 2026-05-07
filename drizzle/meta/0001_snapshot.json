@@ -56,12 +56,8 @@
           "name": "doctor_assistant_mapping_doctor_id_users_id_fk",
           "tableFrom": "doctor_assistant_mapping",
           "tableTo": "users",
-          "columnsFrom": [
-            "doctor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["doctor_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -69,12 +65,8 @@
           "name": "doctor_assistant_mapping_assistant_id_users_id_fk",
           "tableFrom": "doctor_assistant_mapping",
           "tableTo": "users",
-          "columnsFrom": [
-            "assistant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["assistant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -115,16 +107,12 @@
         "specialties_code_unique": {
           "name": "specialties_code_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "code"
-          ]
+          "columns": ["code"]
         },
         "specialties_name_unique": {
           "name": "specialties_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -168,12 +156,8 @@
           "name": "tasks_doctor_id_users_id_fk",
           "tableFrom": "tasks",
           "tableTo": "users",
-          "columnsFrom": [
-            "doctor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["doctor_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -237,12 +221,8 @@
           "name": "user_specialties_user_id_users_id_fk",
           "tableFrom": "user_specialties",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -250,12 +230,8 @@
           "name": "user_specialties_specialty_id_specialties_id_fk",
           "tableFrom": "user_specialties",
           "tableTo": "specialties",
-          "columnsFrom": [
-            "specialty_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["specialty_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -263,10 +239,7 @@
       "compositePrimaryKeys": {
         "user_specialties_user_id_specialty_id_pk": {
           "name": "user_specialties_user_id_specialty_id_pk",
-          "columns": [
-            "user_id",
-            "specialty_id"
-          ]
+          "columns": ["user_id", "specialty_id"]
         }
       },
       "uniqueConstraints": {},
@@ -305,9 +278,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -357,9 +328,7 @@
         "users_simple_email_unique": {
           "name": "users_simple_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -371,20 +340,12 @@
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": [
-        "ADMIN",
-        "DOCTOR",
-        "ASSISTANT"
-      ]
+      "values": ["ADMIN", "DOCTOR", "ASSISTANT"]
     },
     "public.mapping_status": {
       "name": "mapping_status",
       "schema": "public",
-      "values": [
-        "ACTIVE",
-        "INACTIVE",
-        "TEMPORARY"
-      ]
+      "values": ["ACTIVE", "INACTIVE", "TEMPORARY"]
     }
   },
   "schemas": {},

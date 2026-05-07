@@ -56,12 +56,8 @@
           "name": "doctor_assistant_mapping_doctor_id_users_id_fk",
           "tableFrom": "doctor_assistant_mapping",
           "tableTo": "users",
-          "columnsFrom": [
-            "doctor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["doctor_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -69,12 +65,8 @@
           "name": "doctor_assistant_mapping_assistant_id_users_id_fk",
           "tableFrom": "doctor_assistant_mapping",
           "tableTo": "users",
-          "columnsFrom": [
-            "assistant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["assistant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -122,12 +114,8 @@
           "name": "tasks_doctor_id_users_id_fk",
           "tableFrom": "tasks",
           "tableTo": "users",
-          "columnsFrom": [
-            "doctor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["doctor_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -169,9 +157,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -221,9 +207,7 @@
         "users_simple_email_unique": {
           "name": "users_simple_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -235,20 +219,12 @@
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": [
-        "ADMIN",
-        "DOCTOR",
-        "ASSISTANT"
-      ]
+      "values": ["ADMIN", "DOCTOR", "ASSISTANT"]
     },
     "public.mapping_status": {
       "name": "mapping_status",
       "schema": "public",
-      "values": [
-        "ACTIVE",
-        "INACTIVE",
-        "TEMPORARY"
-      ]
+      "values": ["ACTIVE", "INACTIVE", "TEMPORARY"]
     }
   },
   "schemas": {},

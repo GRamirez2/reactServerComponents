@@ -1,10 +1,15 @@
-import { listUsers, listUsersByWorkosId, type User } from '@/lib/repositories/usersRepository';
+import {
+  listUsersByWorkosId,
+  type User,
+} from '@/lib/repositories/usersRepository';
 
 interface UsersListProps {
   workosId: string;
 }
 
-async function getUsers(workosId: string): Promise<{ users: User[]; error: string | null }> {
+async function getUsers(
+  workosId: string,
+): Promise<{ users: User[]; error: string | null }> {
   try {
     // const users = await listUsers();
     const users = await listUsersByWorkosId(workosId);
@@ -18,17 +23,25 @@ async function getUsers(workosId: string): Promise<{ users: User[]; error: strin
 export async function UsersList({ workosId }: UsersListProps) {
   const { users, error } = await getUsers(workosId);
   if (error) {
-    return <p><strong>DB error:</strong> {error}</p>;
+    return (
+      <p>
+        <strong>DB error:</strong> {error}
+      </p>
+    );
   }
   return (
     <section className="my-8">
-      <h3 className='text-xl'>List of Users from the Users table that match the WorkOS ID</h3>
+      <h3 className="text-xl">
+        List of Users from the Users table that match the WorkOS ID
+      </h3>
       <ul>
         {users.map((user) => (
-          <li key={user.id}>{user.name} — {user.email} - {user.workosId}</li>
+          <li key={user.id}>
+            {user.name} — {user.email} - {user.workosId}
+          </li>
         ))}
       </ul>
-      <hr className="mt-4"/>
+      <hr className="mt-4" />
     </section>
   );
 }
