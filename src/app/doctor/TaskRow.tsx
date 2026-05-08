@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState } from 'react';
 
 interface TaskRowProps {
   task: {
@@ -17,9 +17,7 @@ interface TaskRowProps {
 }
 
 export function TaskRow({ task, updateCompletedAction }: TaskRowProps) {
-  const selectRef = useRef<HTMLSelectElement>(null);
-
-  const isCompleted = selectRef.current?.value === 'true' ?? task.completed;
+  const [isCompleted, setIsCompleted] = useState(task.completed);
 
   return (
     <tr>
@@ -42,16 +40,12 @@ export function TaskRow({ task, updateCompletedAction }: TaskRowProps) {
       </td>
       <td className="px-3 py-4 align-middle">
         <select
-          ref={selectRef}
           name="completed"
           form={`task-update-${task.id}`}
-          defaultValue={task.completed ? 'true' : 'false'}
+          defaultValue={isCompleted ? 'true' : 'false'}
           className="w-14 rounded-md border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-900"
-          onChange={() => {
-            // Re-render to update button styling
-            selectRef.current?.form?.dispatchEvent(
-              new Event('change', { bubbles: true }),
-            );
+          onChange={(e) => {
+            setIsCompleted(e.target.value === 'true');
           }}
         >
           <option value="false">No</option>
@@ -59,16 +53,7 @@ export function TaskRow({ task, updateCompletedAction }: TaskRowProps) {
         </select>
       </td>
       <td className="px-3 py-4 align-middle">
-        <form
-          id={`task-update-${task.id}`}
-          action={updateCompletedAction}
-          onChange={(e) => {
-            // Trigger re-render on select change
-            selectRef.current?.dispatchEvent(
-              new Event('change', { bubbles: true }),
-            );
-          }}
-        >
+        <form id={`task-update-${task.id}`} action={updateCompletedAction}>
           <input type="hidden" name="taskId" value={task.id} />
           <button
             type="submit"
