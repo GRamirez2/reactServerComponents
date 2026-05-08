@@ -11,14 +11,6 @@ import {
   index,
 } from 'drizzle-orm/pg-core';
 
-export const usersSimple = pgTable('users_simple', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  email: text('email').notNull().unique(),
-  workosId: text('workos_id'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
-
 export const roleEnum = pgEnum('user_role', [
   'ADMIN',
   'DOCTOR',
