@@ -7,22 +7,11 @@ import {
   listUsersByRoles,
 } from '@/lib/repositories/usersRepository';
 import { updateTaskCompletedByAdmin } from '@/lib/repositories/tasksRepository';
-import { AdminTaskUserSelector } from './AdminTaskUserSelector';
+import { AdminTaskUserSelector } from './TaskUserSelector';
 
 type AdminTasksSearchParams = Promise<{
   userId?: string;
 }>;
-
-function buildAdminTasksHref(options?: { userId?: string }) {
-  const params = new URLSearchParams();
-
-  if (options?.userId) {
-    params.set('userId', options.userId);
-  }
-
-  const query = params.toString();
-  return query ? `/admin/tasks?${query}` : '/admin/tasks';
-}
 
 export default async function AdminTasksPage({
   searchParams,
@@ -66,19 +55,22 @@ export default async function AdminTasksPage({
 
     const taskId = String(formData.get('taskId') ?? '');
     const completed = formData.get('completed') === 'true';
-    const selectedUserId = String(formData.get('selectedUserId') ?? '');
 
-    if (!taskId || !selectedUserId) {
-      redirect(buildAdminTasksHref({ userId: selectedUserId }));
+    if (!taskId) {
+      redirect('/admin/tasks');
     }
 
     const result = await updateTaskCompletedByAdmin({ taskId, completed });
     if (!result.ok) {
-      redirect(buildAdminTasksHref({ userId: selectedUserId }));
+      redirect('/admin/tasks');
     }
 
     revalidatePath('/admin/tasks');
-    redirect(buildAdminTasksHref({ userId: selectedUserId }));
+    redirect(
+      selectedUser
+        ? `/admin/tasks?userId=${encodeURIComponent(selectedUser.id)}`
+        : '/admin/tasks',
+    );
   }
 
   const selectedUserId = selectedUser?.id;
@@ -88,32 +80,38 @@ export default async function AdminTasksPage({
       <div className="space-y-2">
         <h3 className="text-xl font-semibold">Tasks</h3>
         <p className="text-sm text-slate-600">
-          Select a doctor or assistant email to view tasks using the same doctor
-          task interface.
+          Pick an email to view that doctor or assistant&apos;s tasks.
         </p>
       </div>
 
-      <AdminTaskUserSelector
-        selectableUsers={selectableUsers}
-        selectedUserId={selectedUserId}
-      />
+      {selectableUsers.length > 0 ? (
+        <>
+          <AdminTaskUserSelector
+            selectableUsers={selectableUsers}
+            selectedUserId={selectedUserId}
+          />
 
-      {selectedUser ? (
-        <TaskList
-          userId={selectedUser.id}
-          userEmail={selectedUser.email}
-          updateCompletedAction={async (formData) => {
-            'use server';
+          {selectedUser ? (
+            <TaskList
+              userId={selectedUser.id}
+              userEmail={selectedUser.email}
+              updateCompletedAction={async (formData) => {
+                'use server';
 
-            formData.set('selectedUserId', selectedUser.id);
-            await updateCompletedAction(formData);
-          }}
-        />
-      ) : selectableUsers.length === 0 ? (
+                await updateCompletedAction(formData);
+              }}
+            />
+          ) : (
+            <p className="text-sm text-slate-600">
+              Select a doctor or assistant email to load their tasks.
+            </p>
+          )}
+        </>
+      ) : (
         <p className="text-sm text-slate-600">
           No doctors or assistants were found in the users table.
         </p>
-      ) : null}
+      )}
     </div>
   );
 }
