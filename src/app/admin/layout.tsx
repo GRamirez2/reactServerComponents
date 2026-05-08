@@ -6,8 +6,8 @@ const ADMIN_MENU_ITEMS = [
   { href: '/admin/schedule-uploads', label: 'Daily Uploads' },
   { href: '/admin/totals', label: 'Totals' },
   {
-    href: '/admin/tasks/sample-task-id',
-    label: 'Task Details',
+    href: '/admin/tasks',
+    label: 'Tasks',
     matchPrefix: '/admin/tasks',
   },
   { href: '/admin/users', label: 'Users' },

@@ -32,6 +32,8 @@ This project uses [Drizzle ORM](https://orm.drizzle.team) with PostgreSQL. The s
 | `npm run db:studio`   | Opens Drizzle Studio — a browser-based UI to browse and edit your database.                          |
 | `npm run seed`        | Seeds the `users_simple` table with sample data (reads `DATABASE_URL` from `.env.local`).            |
 
+> **Note:** Some early migrations (0002, 0003) were written manually and are missing their Drizzle meta snapshots. This causes `drizzle-kit generate` to ask unexpected questions about column renames. Use `npx drizzle-kit push` (or `npm run db:push`) to apply schema changes directly — it diffs the current schema against the live database and skips the migration history entirely.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

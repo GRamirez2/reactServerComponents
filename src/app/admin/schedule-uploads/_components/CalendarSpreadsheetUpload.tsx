@@ -3,19 +3,13 @@
 import { useActionState, useEffect } from 'react';
 import { parseDataAction, type ParseActionState } from '../_actions/parseData';
 
-type SpreadsheetUploadProps = {
-  title: string;
-  subtitle: string;
-  submitButtonLabel?: string;
+type CalendarSpreadsheetUploadProps = {
   onUploadSuccess?: (hasUpload: boolean) => void;
 };
 
-export default function SpreadsheetUpload({
-  title,
-  subtitle,
-  submitButtonLabel = 'Upload spreadsheet',
+export default function CalendarSpreadsheetUpload({
   onUploadSuccess,
-}: SpreadsheetUploadProps) {
+}: CalendarSpreadsheetUploadProps) {
   const initialState: ParseActionState = {
     errorMessage: null,
     result: null,
@@ -34,8 +28,12 @@ export default function SpreadsheetUpload({
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4 space-y-1">
-        <h4 className="text-lg font-semibold text-slate-900">{title}</h4>
-        <p className="text-sm text-slate-600">{subtitle}</p>
+        <h4 className="text-lg font-semibold text-slate-900">
+          Daily Calendar Upload
+        </h4>
+        <p className="text-sm text-slate-600">
+          Upload the latest calendar export.
+        </p>
       </div>
       <form className="space-y-4" action={formAction}>
         <div>
@@ -62,7 +60,7 @@ export default function SpreadsheetUpload({
           disabled={isPending}
           className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-blue-300"
         >
-          {isPending ? 'Parsing spreadsheet...' : submitButtonLabel}
+          {isPending ? 'Parsing spreadsheet...' : 'Upload Calendar Data'}
         </button>
       </form>
 

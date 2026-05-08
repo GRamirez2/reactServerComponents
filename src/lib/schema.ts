@@ -79,6 +79,10 @@ export const tasks = pgTable('tasks', {
   doctorId: text('doctor_id')
     .references(() => users.id)
     .notNull(),
-  title: text('title').notNull(),
+  specimanName: text('speciman_name').notNull(),
+  specimenId: integer('specimen_id'),
+  caseId: integer('case_id'),
+  specFrozen: boolean('spec_frozen').default(false),
+  points: integer('points'),
   completed: boolean('completed').default(false),
 });

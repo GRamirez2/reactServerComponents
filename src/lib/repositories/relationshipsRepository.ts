@@ -393,3 +393,57 @@ export async function deleteDoctorSpecialtyRelationship(input: {
       ),
     );
 }
+
+export async function updateDoctorSpecialtyRelationship(input: {
+  doctorId: string;
+  specialtyId: number;
+  isPrimary: boolean;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  if (!input.doctorId || Number.isNaN(input.specialtyId)) {
+    return {
+      ok: false,
+      message: 'Missing doctor-specialty relationship values.',
+    };
+  }
+
+  const relationshipRows = await db
+    .select()
+    .from(userSpecialties)
+    .where(
+      and(
+        eq(userSpecialties.userId, input.doctorId),
+        eq(userSpecialties.specialtyId, input.specialtyId),
+      ),
+    )
+    .limit(1);
+
+  const relationship = relationshipRows[0];
+
+  if (!relationship) {
+    return {
+      ok: false,
+      message: 'The selected doctor-specialty relationship no longer exists.',
+    };
+  }
+
+  if (input.isPrimary) {
+    await db
+      .update(userSpecialties)
+      .set({ isPrimary: false })
+      .where(eq(userSpecialties.userId, input.doctorId));
+  }
+
+  await db
+    .update(userSpecialties)
+    .set({
+      isPrimary: input.isPrimary,
+    })
+    .where(
+      and(
+        eq(userSpecialties.userId, input.doctorId),
+        eq(userSpecialties.specialtyId, input.specialtyId),
+      ),
+    );
+
+  return { ok: true };
+}

@@ -29,6 +29,13 @@
       "when": 1778184000000,
       "tag": "0003_rename_specialties_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1746748800000,
+      "tag": "0004_tasks_specimen_columns",
+      "breakpoints": true
     }
   ]
 }

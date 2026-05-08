@@ -11,6 +11,7 @@ import {
   listDoctorSpecialtyRelationships,
   listUsersByRole,
   updateDoctorAssistantRelationship,
+  updateDoctorSpecialtyRelationship,
 } from '@/lib/repositories/relationshipsRepository';
 
 type RelationshipsSearchParams = Promise<{
@@ -199,6 +200,32 @@ export default async function AdminRelationshipsPage({
       buildRelationshipsPageHref({
         toast: 'success',
         details: 'Doctor-specialty relationship removed.',
+      }),
+    );
+  }
+
+  async function updateDoctorSpecialtyAction(formData: FormData) {
+    'use server';
+
+    const doctorId = String(formData.get('doctorId') ?? '');
+    const specialtyId = Number.parseInt(
+      String(formData.get('specialtyId') ?? ''),
+      10,
+    );
+    const isPrimary = formData.get('isPrimary') === 'true';
+    const result = await updateDoctorSpecialtyRelationship({
+      doctorId,
+      specialtyId,
+      isPrimary,
+    });
+
+    revalidatePath('/admin/relationships');
+    redirect(
+      buildRelationshipsPageHref({
+        toast: result.ok ? 'success' : 'error',
+        details: result.ok
+          ? 'Doctor-specialty relationship updated.'
+          : result.message,
       }),
     );
   }
@@ -506,7 +533,7 @@ export default async function AdminRelationshipsPage({
             </p>
           </div>
 
-          <div className="max-h-72 overflow-auto">
+          <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200 text-sm">
               <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                 <tr>
@@ -541,18 +568,44 @@ export default async function AdminRelationshipsPage({
                         </p>
                       </td>
                       <td className="px-3 py-3 align-middle">
-                        {relationship.isPrimary ? (
-                          <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-                            Yes
-                          </span>
-                        ) : (
-                          <span className="text-xs text-slate-400">—</span>
-                        )}
+                        <select
+                          name="isPrimary"
+                          form={`doctor-specialty-update-${relationship.doctorId}-${relationship.specialtyId}`}
+                          defaultValue={
+                            relationship.isPrimary ? 'true' : 'false'
+                          }
+                          className="w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-900"
+                        >
+                          <option value="false">No</option>
+                          <option value="true">Yes</option>
+                        </select>
                       </td>
                       <td className="px-3 py-3 align-middle text-slate-500">
                         {formatDateTime(relationship.createdAt)}
                       </td>
                       <td className="px-3 py-3 align-middle">
+                        <form
+                          id={`doctor-specialty-update-${relationship.doctorId}-${relationship.specialtyId}`}
+                          action={updateDoctorSpecialtyAction}
+                          className="mb-2"
+                        >
+                          <input
+                            type="hidden"
+                            name="doctorId"
+                            value={relationship.doctorId}
+                          />
+                          <input
+                            type="hidden"
+                            name="specialtyId"
+                            value={relationship.specialtyId}
+                          />
+                          <button
+                            type="submit"
+                            className="w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-700 transition hover:bg-slate-50"
+                          >
+                            Save
+                          </button>
+                        </form>
                         <form action={deleteDoctorSpecialtyAction}>
                           <input
                             type="hidden"
@@ -566,7 +619,7 @@ export default async function AdminRelationshipsPage({
                           />
                           <button
                             type="submit"
-                            className="rounded-md border border-rose-300 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-rose-700 transition hover:bg-rose-50"
+                            className="w-full rounded-md border border-rose-300 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-rose-700 transition hover:bg-rose-50"
                           >
                             Remove
                           </button>
@@ -578,13 +631,6 @@ export default async function AdminRelationshipsPage({
               </tbody>
             </table>
           </div>
-
-          <p className="mt-4 text-xs text-slate-500">
-            To change a doctor&apos;s primary specialty, remove the current
-            primary specialty and add it back without marking it as primary.
-            Then remove or add the specialty that should be primary and select
-            Primary when adding it.
-          </p>
         </div>
       </section>
     </div>
