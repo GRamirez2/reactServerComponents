@@ -18,12 +18,17 @@ type CocktailResponse = {
 };
 
 async function getRandomCocktail(): Promise<CocktailDrink | null> {
-  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php', {
-    cache: 'no-store',
-  });
+  const response = await fetch(
+    'https://www.thecocktaildb.com/api/json/v1/1/random.php',
+    {
+      cache: 'no-store',
+    },
+  );
 
   if (!response.ok) {
-    throw new Error(`Cocktail API request failed with status ${response.status}`);
+    throw new Error(
+      `Cocktail API request failed with status ${response.status}`,
+    );
   }
 
   const data = (await response.json()) as CocktailResponse;
@@ -81,11 +86,22 @@ async function CocktailCard() {
           unoptimized
         />
       ) : null}
-      <p><strong>ID:</strong> {drink.idDrink}</p>
-      <p><strong>Category:</strong> {drink.strCategory ?? 'Unknown'}</p>
-      <p><strong>Alcoholic:</strong> {drink.strAlcoholic ?? 'Unknown'}</p>
-      <p><strong>Glass:</strong> {drink.strGlass ?? 'Unknown'}</p>
-      <p><strong>Instructions:</strong> {drink.strInstructions ?? 'No instructions available.'}</p>
+      <p>
+        <strong>ID:</strong> {drink.idDrink}
+      </p>
+      <p>
+        <strong>Category:</strong> {drink.strCategory ?? 'Unknown'}
+      </p>
+      <p>
+        <strong>Alcoholic:</strong> {drink.strAlcoholic ?? 'Unknown'}
+      </p>
+      <p>
+        <strong>Glass:</strong> {drink.strGlass ?? 'Unknown'}
+      </p>
+      <p>
+        <strong>Instructions:</strong>{' '}
+        {drink.strInstructions ?? 'No instructions available.'}
+      </p>
 
       {ingredients.length > 0 ? (
         <>
@@ -105,7 +121,10 @@ export default async function Info() {
   return (
     <>
       <h1>A Random Cocktail</h1>
-      <p>This is a random cocktail generator. Click the button to get a new cocktail.</p>
+      <p>
+        This is a random cocktail generator. Click the button to get a new
+        cocktail.
+      </p>
       <RefreshCocktailButton />
       <Suspense fallback={<p>Loading random cocktail...</p>}>
         <CocktailCard />

@@ -20,6 +20,20 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Database (Drizzle ORM)
+
+This project uses [Drizzle ORM](https://orm.drizzle.team) with PostgreSQL. The schema lives in `src/lib/schema.ts` and the database connection in `src/lib/db.ts`.
+
+| Script                | Description                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------- |
+| `npm run db:push`     | Directly syncs your schema to the database without generating migration files. Good for development. |
+| `npm run db:generate` | Generates SQL migration files in the `drizzle/` folder based on schema changes.                      |
+| `npm run db:migrate`  | Applies any pending migration files from `drizzle/` to the database.                                 |
+| `npm run db:studio`   | Opens Drizzle Studio — a browser-based UI to browse and edit your database.                          |
+| `npm run seed`        | Seeds the `users_simple` table with sample data (reads `DATABASE_URL` from `.env.local`).            |
+
+> **Note:** Some early migrations (0002, 0003) were written manually and are missing their Drizzle meta snapshots. This causes `drizzle-kit generate` to ask unexpected questions about column renames. Use `npx drizzle-kit push` (or `npm run db:push`) to apply schema changes directly — it diffs the current schema against the live database and skips the migration history entirely.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

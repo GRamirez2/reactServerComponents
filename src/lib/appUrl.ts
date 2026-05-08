@@ -26,7 +26,8 @@ export async function getAppBaseUrl() {
   }
 
   const requestHeaders = await headers();
-  const host = requestHeaders.get('x-forwarded-host') ?? requestHeaders.get('host');
+  const host =
+    requestHeaders.get('x-forwarded-host') ?? requestHeaders.get('host');
 
   if (!host) {
     return 'http://localhost:3000';
@@ -34,7 +35,9 @@ export async function getAppBaseUrl() {
 
   const protocol =
     requestHeaders.get('x-forwarded-proto') ??
-    (host.includes('localhost') || host.startsWith('127.0.0.1') ? 'http' : 'https');
+    (host.includes('localhost') || host.startsWith('127.0.0.1')
+      ? 'http'
+      : 'https');
 
   return `${protocol}://${host}`;
 }
