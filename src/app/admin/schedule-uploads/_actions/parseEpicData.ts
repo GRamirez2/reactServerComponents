@@ -3,7 +3,14 @@
 import { parseOffice } from 'officeparser';
 import { eq } from 'drizzle-orm';
 import db from '@/lib/db';
-import { specialties, tasks, userSpecialties, users } from '@/lib/schema';
+import {
+  specialties,
+  tasks,
+  uploads,
+  userSpecialties,
+  users,
+} from '@/lib/schema';
+import { withAuth } from '@workos-inc/authkit-nextjs';
 
 const allowedExtensions = new Set(['.xlsx', '.xlsb']);
 
@@ -515,6 +522,7 @@ export async function createEpicAssignmentsAction(
 ): Promise<CreateAssignmentsActionState> {
   const epicJson = String(formData.get('epicJson') ?? '[]');
   const previewEpicJson = String(formData.get('previewEpicJson') ?? '');
+  const fileName = String(formData.get('fileName') || 'unknown');
 
   if (!previewEpicJson || previewEpicJson !== epicJson) {
     return {
@@ -573,7 +581,26 @@ export async function createEpicAssignmentsAction(
   );
 
   if (newTaskRows.length > 0) {
-    await db.insert(tasks).values(newTaskRows);
+    const { user } = await withAuth();
+    if (!user) {
+      return {
+        errorMessage: 'You must be signed in to create assignments.',
+        successMessage: null,
+        insertedCount: 0,
+        skippedCount: 0,
+      };
+    }
+    await db.transaction(async (tx) => {
+      const [uploadRecord] = await tx
+        .insert(uploads)
+        .values({ fileName, createdBy: user.id })
+        .returning({ id: uploads.id });
+      await tx
+        .insert(tasks)
+        .values(
+          newTaskRows.map((row) => ({ ...row, uploadId: uploadRecord.id })),
+        );
+    });
   }
 
   return {

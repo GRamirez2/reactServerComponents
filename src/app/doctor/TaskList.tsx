@@ -25,7 +25,8 @@ export async function TaskList({
         <table className="min-w-full table-fixed divide-y divide-slate-200 text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="w-44 px-3 py-3">Speciman Name</th>
+              <th className="w-28 px-3 py-3">Created</th>
+              <th className="w-64 px-3 py-3">Speciman Name</th>
               <th className="px-3 py-3">Speciman ID</th>
               <th className="px-3 py-3">Case ID</th>
               <th className="px-3 py-3">Spec Frozen</th>
@@ -37,7 +38,7 @@ export async function TaskList({
           <tbody className="divide-y divide-slate-100 bg-white">
             {tasks.length === 0 ? (
               <tr>
-                <td className="px-3 py-6 text-slate-500" colSpan={7}>
+                <td className="px-3 py-6 text-slate-500" colSpan={8}>
                   No tasks available for your doctor/assistant relationships.
                 </td>
               </tr>
@@ -54,6 +55,8 @@ export async function TaskList({
                     specFrozen: task.specFrozen ?? false,
                     completed: task.completed ?? false,
                     points: task.points,
+                    uploadedAt: task.uploadedAt,
+                    uploadId: task.uploadId,
                   }}
                   updateCompletedAction={updateCompletedAction}
                 />

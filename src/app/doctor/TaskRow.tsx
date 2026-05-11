@@ -12,6 +12,8 @@ interface TaskRowProps {
     specFrozen: boolean;
     completed: boolean;
     points?: number | null;
+    uploadedAt?: Date | null;
+    uploadId?: number | null;
   };
   updateCompletedAction: (formData: FormData) => Promise<void>;
 }
@@ -21,6 +23,16 @@ export function TaskRow({ task, updateCompletedAction }: TaskRowProps) {
 
   return (
     <tr>
+      <td className="px-3 py-4 align-middle text-slate-700">
+        {task.uploadedAt ? (
+          <>
+            <p>{task.uploadedAt.toLocaleDateString()}</p>
+            <p className="text-xs text-slate-500">id: {task.uploadId ?? '—'}</p>
+          </>
+        ) : (
+          '—'
+        )}
+      </td>
       <td className="px-3 py-4 align-middle text-slate-800">
         <p className="truncate font-medium" title={task.specimanName}>
           {task.specimanName}

@@ -66,6 +66,15 @@ export const doctorAssistantMapping = pgTable('doctor_assistant_mapping', {
   assignedAt: timestamp('assigned_at').defaultNow(),
 });
 
+export const uploads = pgTable('uploads', {
+  id: serial('id').primaryKey(),
+  fileName: text('file_name').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  createdBy: text('created_by')
+    .references(() => users.id)
+    .notNull(),
+});
+
 export const tasks = pgTable('tasks', {
   id: uuid('id').defaultRandom().primaryKey(),
   doctorId: text('doctor_id')
@@ -77,4 +86,5 @@ export const tasks = pgTable('tasks', {
   specFrozen: boolean('spec_frozen').default(false),
   points: integer('points'),
   completed: boolean('completed').default(false),
+  uploadId: integer('upload_id').references(() => uploads.id),
 });

@@ -10,6 +10,7 @@ type EpicSpreadsheetUploadProps = {
   onUploadSuccess?: (
     hasUpload: boolean,
     rows: Record<string, string>[],
+    fileName: string,
   ) => void;
 };
 
@@ -27,7 +28,7 @@ export default function EpicSpreadsheetUpload({
 
   useEffect(() => {
     if (state.result) {
-      onUploadSuccess?.(true, state.result.json);
+      onUploadSuccess?.(true, state.result.json, state.result.fileName);
     }
   }, [state.result, onUploadSuccess]);
 
