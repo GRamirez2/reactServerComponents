@@ -6,6 +6,7 @@ export type UploadWithTaskCount = {
   id: number;
   fileName: string;
   createdAt: Date | null;
+  createdBy: string;
   taskCount: number;
 };
 
@@ -17,6 +18,7 @@ export async function listUploadsWithTaskCounts(): Promise<
       id: uploads.id,
       fileName: uploads.fileName,
       createdAt: uploads.createdAt,
+      createdBy: uploads.createdBy,
       taskCount: count(tasks.id),
     })
     .from(uploads)

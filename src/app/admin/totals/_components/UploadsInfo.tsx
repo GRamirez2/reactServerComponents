@@ -19,6 +19,7 @@ export default async function UploadsInfo() {
                 <th className="pb-2 pr-4">ID</th>
                 <th className="pb-2 pr-4">Date</th>
                 <th className="pb-2 pr-4">File Name</th>
+                <th className="pb-2 pr-4">Uploaded By</th>
                 <th className="pb-2 text-right">Tasks Created</th>
               </tr>
             </thead>
@@ -38,6 +39,9 @@ export default async function UploadsInfo() {
                       : '—'}
                   </td>
                   <td className="py-2 pr-4 font-medium">{upload.fileName}</td>
+                  <td className="py-2 pr-4 text-nowrap text-slate-500">
+                    {upload.createdBy}
+                  </td>
                   <td className="py-2 text-right tabular-nums">
                     {upload.taskCount}
                   </td>
