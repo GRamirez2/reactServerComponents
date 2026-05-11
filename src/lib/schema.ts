@@ -25,7 +25,7 @@ export const statusEnum = pgEnum('mapping_status', [
 
 export const users = pgTable('users', {
   id: text('id').primaryKey(), // WorkOS user ID (e.g. user_...)
-  email: text('email').notNull().unique(),
+  email: text('email').notNull(),
   role: roleEnum('role').notNull().default('MEMBER'),
 });
 

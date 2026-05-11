@@ -2,10 +2,8 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { withAuth } from '@workos-inc/authkit-nextjs';
 import { TaskList } from '@/app/doctor/TaskList';
-import {
-  getUserById,
-  listUsersByRoles,
-} from '@/lib/repositories/usersRepository';
+import { syncAuthUserFromWorkOS } from '@/lib/auth/workosAdminSync';
+import { listUsersByRoles } from '@/lib/repositories/usersRepository';
 import { updateTaskCompletedByAdmin } from '@/lib/repositories/tasksRepository';
 import { AdminTaskUserSelector } from './TaskUserSelector';
 
@@ -27,12 +25,12 @@ export default async function AdminTasksPage({
     redirect('/');
   }
 
-  const [actor, selectableUsers] = await Promise.all([
-    getUserById(user.id),
+  const [{ isWorkOSAdmin }, selectableUsers] = await Promise.all([
+    syncAuthUserFromWorkOS(user),
     listUsersByRoles(['DOCTOR', 'ASSISTANT']),
   ]);
 
-  if (!actor || actor.role !== 'ADMIN') {
+  if (!isWorkOSAdmin) {
     redirect('/');
   }
 
@@ -48,8 +46,9 @@ export default async function AdminTasksPage({
       redirect('/');
     }
 
-    const actionAppUser = await getUserById(actionUser.id);
-    if (!actionAppUser || actionAppUser.role !== 'ADMIN') {
+    const { isWorkOSAdmin: actionIsWorkOSAdmin } =
+      await syncAuthUserFromWorkOS(actionUser);
+    if (!actionIsWorkOSAdmin) {
       redirect('/');
     }
 
