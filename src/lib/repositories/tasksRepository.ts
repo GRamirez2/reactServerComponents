@@ -1,6 +1,6 @@
 import { and, asc, eq, inArray, ne, or } from 'drizzle-orm';
 import db from '@/lib/db';
-import { doctorAssistantMapping, tasks, users } from '@/lib/schema';
+import { doctorAssistantMapping, tasks, uploads, users } from '@/lib/schema';
 
 export type VisibleTask = {
   id: string;
@@ -12,6 +12,8 @@ export type VisibleTask = {
   specFrozen: boolean | null;
   completed: boolean | null;
   points: number | null;
+  uploadedAt: Date | null;
+  uploadId: number | null;
 };
 
 async function listDoctorIdsForAssistant(
@@ -62,8 +64,20 @@ export async function listVisibleTasksForUser(
   }
 
   const taskRows = await db
-    .select()
+    .select({
+      id: tasks.id,
+      doctorId: tasks.doctorId,
+      specimanName: tasks.specimanName,
+      specimenId: tasks.specimenId,
+      caseId: tasks.caseId,
+      specFrozen: tasks.specFrozen,
+      completed: tasks.completed,
+      points: tasks.points,
+      uploadedAt: uploads.createdAt,
+      uploadId: tasks.uploadId,
+    })
     .from(tasks)
+    .leftJoin(uploads, eq(tasks.uploadId, uploads.id))
     .where(inArray(tasks.doctorId, visibleDoctorIds))
     .orderBy(asc(tasks.completed), asc(tasks.specimanName), asc(tasks.caseId));
 
@@ -90,6 +104,8 @@ export async function listVisibleTasksForUser(
     specFrozen: task.specFrozen,
     completed: task.completed,
     points: task.points,
+    uploadedAt: task.uploadedAt ?? null,
+    uploadId: task.uploadId ?? null,
   }));
 }
 

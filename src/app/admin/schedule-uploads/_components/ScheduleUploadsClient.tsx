@@ -14,6 +14,7 @@ export default function ScheduleUploadsClient() {
   const [epicUploaded, setEpicUploaded] = useState(false);
   const [calendarUploaded, setCalendarUploaded] = useState(false);
   const [epicRows, setEpicRows] = useState<Record<string, string>[]>([]);
+  const [epicFileName, setEpicFileName] = useState('');
   const [previewedEpicJson, setPreviewedEpicJson] = useState<string | null>(
     null,
   );
@@ -37,9 +38,10 @@ export default function ScheduleUploadsClient() {
     useActionState(previewEpicAssignmentsAction, initialPreviewState);
 
   const handleEpicUpload = useCallback(
-    (hasUpload: boolean, rows: Record<string, string>[]) => {
+    (hasUpload: boolean, rows: Record<string, string>[], fileName: string) => {
       setEpicUploaded(hasUpload);
       setEpicRows(hasUpload ? rows : []);
+      setEpicFileName(hasUpload ? fileName : '');
       setPreviewedEpicJson(null);
     },
     [],
@@ -164,6 +166,7 @@ export default function ScheduleUploadsClient() {
               name="previewEpicJson"
               value={previewedEpicJson ?? ''}
             />
+            <input type="hidden" name="fileName" value={epicFileName} />
             <button
               type="submit"
               disabled={
