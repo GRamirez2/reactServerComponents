@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
-import { getWorkOS, withAuth } from '@workos-inc/authkit-nextjs';
+import { withAuth } from '@workos-inc/authkit-nextjs';
+import { syncAuthUserFromWorkOS } from '@/lib/auth/workosAdminSync';
 import AdminSubNav from './AdminSubNav';
 
 const ADMIN_MENU_ITEMS = [
@@ -26,24 +27,9 @@ export default async function AdminLayout({
     redirect('/');
   }
 
-  let roleSlug: string | undefined;
+  const { isWorkOSAdmin } = await syncAuthUserFromWorkOS(user);
 
-  try {
-    const workos = getWorkOS();
-    const memberships = await workos.userManagement.listOrganizationMemberships(
-      {
-        userId: user.id,
-      },
-    );
-    const rawSlug = memberships.data[0]?.role?.slug;
-    roleSlug = rawSlug?.includes('-')
-      ? rawSlug.split('-').slice(1).join('-')
-      : rawSlug;
-  } catch (error) {
-    console.error('[Admin guard] role lookup failed', error);
-  }
-
-  if (roleSlug !== 'admin') {
+  if (!isWorkOSAdmin) {
     redirect('/');
   }
 

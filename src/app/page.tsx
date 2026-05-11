@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getWorkOS, withAuth } from '@workos-inc/authkit-nextjs';
-import { getUserById } from '@/lib/repositories/usersRepository';
+import { withAuth } from '@workos-inc/authkit-nextjs';
+import { syncAuthUserFromWorkOS } from '@/lib/auth/workosAdminSync';
 
 const DB_ROLE_ROUTES: Record<string, string> = {
   ADMIN: '/admin',
@@ -13,28 +13,14 @@ export default async function Home() {
   const { user } = await withAuth();
 
   if (user) {
-    // Check WorkOS org membership for Admin role first
-    try {
-      const workos = getWorkOS();
-      const memberships =
-        await workos.userManagement.listOrganizationMemberships({
-          userId: user.id,
-        });
+    const { appUser, isWorkOSAdmin } = await syncAuthUserFromWorkOS(user);
 
-      const rawSlug = memberships.data[0]?.role?.slug ?? '';
-      const roleSlug = rawSlug.includes('-')
-        ? rawSlug.split('-').slice(1).join('-')
-        : rawSlug;
-
-      if (roleSlug === 'admin') {
-        redirect('/admin');
-      }
-    } catch (error) {
-      console.error('[Home] WorkOS membership check error:', error);
+    if (isWorkOSAdmin) {
+      redirect('/admin');
     }
 
-    // Fall back to DB role for routing
-    const dbUser = await getUserById(user.id);
+    // Fall back to DB role for routing.
+    const dbUser = appUser;
 
     if (dbUser && dbUser.role !== 'MEMBER') {
       const destination = DB_ROLE_ROUTES[dbUser.role];
